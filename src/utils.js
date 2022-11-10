@@ -1,7 +1,7 @@
 'use strict';
 
 const chalk = require(`chalk`);
-// comment2
+
 module.exports.getRandomInt = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
