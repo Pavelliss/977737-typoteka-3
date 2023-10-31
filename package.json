@@ -4,7 +4,7 @@
   "description": "study project",
   "main": "./src/service/service.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run eslint",
     "lint": "eslint src/**/*.ts --fix"
   },
   "repository": {
