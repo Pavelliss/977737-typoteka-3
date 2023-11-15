@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 export const getRandomInt = (min: number, max: number) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -12,4 +14,10 @@ export const shuffle = <T>(someArray: T[]): T[] => {
   }
 
   return someArray;
+};
+
+export const customConsole = {
+  info: (mes: any, ...optionalParams: any[]): void => console.log(chalk.yellow(mes), ...optionalParams),
+  success: (mes: any, ...optionalParams: any[]): void => console.log(chalk.green(mes), ...optionalParams),
+  error: (mes: any, ...optionalParams: any[]): void => console.log(chalk.red(mes), ...optionalParams),
 };
