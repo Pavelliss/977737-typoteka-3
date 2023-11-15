@@ -1,6 +1,7 @@
-import { getRandomInt, shuffle } from '../../utils';
+import { customConsole, getRandomInt, shuffle } from '../../utils';
 import { ExitCode } from '../../constants';
 import * as fs from 'fs';
+import { NoParamCallback } from 'fs';
 
 const DEFAULT_COUNT = '1';
 const MAX_COUNT = 1000;
@@ -61,17 +62,17 @@ const generateAdvertisements = (count: number) => {
   }));
 };
 
-const makeResponseMessage = (err: NodeJS.ErrnoException | null) => {
+const makeResponseMessage: NoParamCallback = (err) => {
   if (err) {
-    return console.error(`Can't write data to file...`);
+    return customConsole.error(`Can't write data to file...`);
   }
 
-  return console.info(`Operation success. File created.`);
+  return customConsole.info(`Operation success. File created.`);
 };
 
 const checkCountArticle = (count: string) => {
   if (Number.parseInt(count, 10) > MAX_COUNT) {
-    console.error(`Не больше 1000 публикаций`);
+    customConsole.error(`Не больше 1000 публикаций`);
     process.exit(ExitCode.error);
   }
 };
