@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import { customConsole } from '../../utils';
 
 const help = {
   name: `--help`,
@@ -16,7 +16,7 @@ const help = {
       --generate <count>    формирует файл mocks.json
     `;
 
-    console.log(chalk.yellow(text));
+    customConsole.info(text);
   },
 };
 
