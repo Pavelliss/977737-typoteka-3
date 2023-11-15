@@ -1,5 +1,5 @@
 import { version } from '../../../package.json';
 
-const getVersion = { name: '--version', run: () => console.log(version) };
+const appVersion = { name: '--version', run: () => console.log(version) };
 
-export default getVersion;
+export default appVersion;
