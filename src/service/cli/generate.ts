@@ -1,7 +1,6 @@
 import { customConsole, getRandomInt, shuffle } from '../../utils';
 import { ExitCode } from '../../constants';
 import * as fs from 'fs';
-import { NoParamCallback } from 'fs';
 
 const DEFAULT_COUNT = '1';
 const MAX_COUNT = 1000;
@@ -62,14 +61,6 @@ const generateAdvertisements = (count: number) => {
   }));
 };
 
-const makeResponseMessage: NoParamCallback = (err) => {
-  if (err) {
-    return customConsole.error(`Can't write data to file...`);
-  }
-
-  return customConsole.info(`Operation success. File created.`);
-};
-
 const checkCountArticle = (count: string) => {
   if (Number.parseInt(count, 10) > MAX_COUNT) {
     customConsole.error(`Не больше 1000 публикаций`);
@@ -79,13 +70,19 @@ const checkCountArticle = (count: string) => {
 
 const generate = {
   name: '--generate',
-  run: (args = [DEFAULT_COUNT]) => {
+  run: async (args = [DEFAULT_COUNT]) => {
     const [count] = args;
     checkCountArticle(count);
 
     const countOffer = Number.parseInt(count, 10);
     const content = JSON.stringify(generateAdvertisements(countOffer));
-    fs.writeFile(FILE_NAME, content, makeResponseMessage);
+
+    try {
+      await fs.promises.writeFile(FILE_NAME, content);
+      return customConsole.info(`Operation success. File created.`);
+    } catch (err) {
+      return customConsole.error(`Can't write data to file...`);
+    }
   },
 };
 
