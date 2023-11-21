@@ -2,10 +2,9 @@ import { Router } from 'express';
 
 const articleRouter = Router();
 
-articleRouter.get('/', (_, res) => res.send('/article'));
-articleRouter.get('/:id', (_, res) => res.send('/article/:id'));
-articleRouter.get('/edit/:id', (_, res) => res.send('/article/edit/:id'));
-articleRouter.get('/category/:id', (_, res) => res.send('/article/category/:id'));
-articleRouter.get('/articles/add', (_, res) => res.send('/articles/add'));
+articleRouter.get('/category/:id', (_, res) => res.render('articles/articles-by-category'));
+articleRouter.get('/add', (_, res) => res.render('articles/post'));
+articleRouter.get('/edit/:id', (_, res) => res.render('articles/post'));
+articleRouter.get('/:id', (_, res) => res.render('articles/post-detail'));
 
 export default articleRouter;
