@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npm run eslint",
     "lint": "eslint src/**/*.ts --fix",
-    "start.dev": "nodemon ./src/main.js"
+    "start.dev": "nodemon ./src/main.js",
+    "start-front-server": "ts-node ./src/express/express.ts"
   },
   "repository": {
     "type": "git",
