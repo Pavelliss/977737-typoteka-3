@@ -1,14 +1,8 @@
-import * as http from 'http';
 import { customConsole } from '../../utils';
 import * as fs from 'fs';
-import { IncomingMessage, ServerResponse } from 'http';
 import { HttpCode } from '../../constants';
+import express from 'express';
 
-type TParam = {
-  res: ServerResponse;
-  statusCode: (typeof HttpCode)[keyof typeof HttpCode];
-  message: string;
-};
 type TMock = {
   type: string;
   title: string;
@@ -19,46 +13,23 @@ type TMock = {
 };
 
 const DEFAULT_PORT = 3000;
-const FILENAME = `mocks.json`;
+const FILE_NAME = `mocks.json`;
 
-const sendResponse = (param: TParam) => {
-  const { res, statusCode, message } = param;
-  const template = `
-    <!Doctype html>
-      <html lang="ru">
-      <head>
-        <title>With love from Node</title>
-      </head>
-      <body>${message}</body>
-    </html>`.trim();
+const app = express();
 
-  res.writeHead(statusCode, {
-    'Content-Type': 'text/html; charset=UTF-8',
-  });
+app.use(express.json());
 
-  res.end(template);
-  // 'Content-Type': `text/html; charset=UTF-8`,
-};
-
-const onClientConnect = async (req: IncomingMessage, res: ServerResponse) => {
-  const notFoundMessageText = `Not found`;
-
-  switch (req.url) {
-    case '/':
-      try {
-        const fileContent = await fs.promises.readFile(FILENAME);
-        const mock: TMock[] = JSON.parse(`${fileContent}`);
-        const message = mock.map((post) => `<li>${post.title}</li>`).join(``);
-        sendResponse({ res, statusCode: HttpCode.OK, message });
-      } catch (err) {
-        sendResponse({ res, statusCode: HttpCode.NOT_FOUND, message: notFoundMessageText });
-      }
-      break;
-    default:
-      sendResponse({ res, statusCode: HttpCode.NOT_FOUND, message: notFoundMessageText });
-      break;
+app.get('/posts', async (_, res) => {
+  try {
+    const fileContent = await fs.promises.readFile(FILE_NAME);
+    const mock: TMock[] = JSON.parse(`${fileContent}`);
+    res.send(mock);
+  } catch {
+    res.send([]);
   }
-};
+});
+
+app.use((_, res) => res.status(HttpCode.NOT_FOUND).send(`Not found`));
 
 const server = {
   name: '--server',
@@ -66,16 +37,12 @@ const server = {
     const [customPort] = args;
 
     const port = Number.parseInt(customPort, 10) || DEFAULT_PORT;
-
-    http
-      .createServer(onClientConnect)
-      .listen(port)
-      .on('listening', () => {
-        customConsole.success(`Ожидаю соединений на ${port}`);
-      })
-      .on('error', ({ message }) => {
-        customConsole.error(`Ошибка при создании сервера: ${message}`);
-      });
+    app.listen(port, () => {
+      customConsole.success(`Ожидаю соединений на ${port}`);
+    });
+    app.on('error', (err) => {
+      customConsole.error(`Ошибка при создании сервера: ${err}`);
+    });
   },
 };
 
