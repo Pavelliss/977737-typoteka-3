@@ -1,34 +1,14 @@
 import { customConsole } from '../../utils';
-import * as fs from 'fs';
-import { HttpCode } from '../../constants';
+import { API_PREFIX, HttpCode } from '../../constants';
 import express from 'express';
-
-type TMock = {
-  type: string;
-  title: string;
-  description: string;
-  sum: number;
-  picture: string;
-  category: string[];
-};
+import router from '../api';
 
 const DEFAULT_PORT = 3000;
-const FILE_NAME = `mocks.json`;
 
 const app = express();
 
+app.use(API_PREFIX, router);
 app.use(express.json());
-
-app.get('/posts', async (_, res) => {
-  try {
-    const fileContent = await fs.promises.readFile(FILE_NAME);
-    const mock: TMock[] = JSON.parse(`${fileContent}`);
-    res.send(mock);
-  } catch {
-    res.send([]);
-  }
-});
-
 app.use((_, res) => res.status(HttpCode.NOT_FOUND).send(`Not found`));
 
 const server = {
