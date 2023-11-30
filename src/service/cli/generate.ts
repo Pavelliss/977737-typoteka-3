@@ -1,5 +1,5 @@
 import { customConsole, getRandomInt, shuffle } from '../../utils';
-import { ExitCode } from '../../constants';
+import { ExitCode, MAX_ID_LENGTH } from '../../constants';
 import * as fs from 'fs';
 import { nanoid } from 'nanoid';
 
@@ -12,8 +12,6 @@ type TAdvertisementParam = {
 };
 
 const MAX_COUNT = 1000;
-const MAX_ID_LENGTH = 6;
-
 const DEFAULT_COUNT = '1';
 const FILE_NAME = `mocks.json`;
 const FILE_SENTENCES_PATH = './data/sentences.txt';

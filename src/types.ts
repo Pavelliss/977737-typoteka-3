@@ -1,7 +1,9 @@
-type TComment = {
+export type TComment = {
   id: string;
   text: string;
 };
+
+export type TNewArticle = Omit<TArticle, 'id' | 'comments'>;
 
 export type TArticle = {
   id: string;

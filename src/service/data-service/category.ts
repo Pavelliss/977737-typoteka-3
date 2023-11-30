@@ -14,8 +14,6 @@ class Category {
       return acc;
     }, new Set());
 
-    console.log(categories);
-
     return [...categories];
   }
 }
