@@ -62,7 +62,7 @@ const generateAdvertisements = (param: TAdvertisementParam) => {
     description: shuffle(sentences).slice(0, 5).join(' '),
     sum: getRandomInt(Price.MIN, Price.MAX),
     picture: `item${`${getRandomInt(Picture.MIN, Picture.MAX)}`.padStart(2, '0')}.jpg`,
-    category: shuffle(categories).slice(0, getRandomInt(1, categories.length - 1)),
+    categories: shuffle(categories).slice(0, getRandomInt(1, categories.length - 1)),
     comments: generateComments(comments, getRandomInt(1, comments.length - 1)),
   }));
 };
