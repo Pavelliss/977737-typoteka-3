@@ -14,3 +14,5 @@ export const HttpCode = {
   FORBIDDEN: 403,
   UNAUTHORIZED: 401,
 } as const;
+
+export const API_PREFIX = '/api';
