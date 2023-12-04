@@ -4,7 +4,8 @@
   "description": "study project",
   "main": "./src/service/service.js",
   "scripts": {
-    "test": "npm run eslint",
+    "test": "npm run eslint && npm run jest",
+    "jest": "jest",
     "lint": "eslint src/**/*.ts --fix",
     "start.dev": "nodemon ./src/main.js",
     "start-front-server": "ts-node ./src/express/express.ts"
