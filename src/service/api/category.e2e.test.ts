@@ -5,6 +5,7 @@ import category from './category';
 import { TArticle } from '../../types';
 import Category from '../data-service/category';
 import { HttpCode } from '../../constants';
+import { Url } from './constants';
 
 const mocks: TArticle[] = [
   {
@@ -45,10 +46,11 @@ describe('API returns category list', () => {
   let response: supertest.Response;
 
   beforeAll(async () => {
-    response = await supertest(app).get('/category');
+    response = await supertest(app).get(Url.category);
   });
 
   test('Status code 200', () => expect(response.statusCode).toBe(HttpCode.OK));
   test('return 4 category', () => expect(response.body.length).toBe(4));
-  test('Categories names are: "Игры", "Животные", "Книги", "Разное"', () => expect(response.body).toEqual(mocks[0].categories));
+  test('Categories names are: "Игры", "Животные", "Книги", "Разное"', () =>
+    expect(response.body).toEqual(mocks[0].categories));
 });

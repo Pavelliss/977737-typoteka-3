@@ -5,11 +5,12 @@ import articleValidator from '../middlewares/articleValidator';
 import articleExists from '../middlewares/articleExists';
 import commentExists from '../middlewares/commentExists';
 import commentValidator from '../middlewares/commentValidator';
+import { Url } from './constants';
 
 const router = Router();
 
 export default (app: Router, service: Article) => {
-  app.use('/articles', router);
+  app.use(Url.articles, router);
 
   router.get('/', async (_, res) => {
     const articles = service.findAll();
@@ -17,7 +18,7 @@ export default (app: Router, service: Article) => {
     return res.status(HttpCode.OK).json(articles);
   });
 
-  router.get('/:articleId', articleExists(service), (req, res) => {
+  router.get(Url.articlesId, articleExists(service), (req, res) => {
     const { articleId } = req.params;
     const article = service.findById(articleId);
 
@@ -30,38 +31,50 @@ export default (app: Router, service: Article) => {
     return res.status(HttpCode.CREATED).json(newArticle);
   });
 
-  router.put('/:articleId', [articleExists(service), articleValidator], (req: Request, res: Response) => {
-    const { articleId } = req.params;
-    const updateArticle = service.edit(articleId, req.body);
+  router.put(
+    Url.articlesId,
+    [articleExists(service), articleValidator],
+    (req: Request, res: Response) => {
+      const { articleId } = req.params;
+      const updateArticle = service.edit(articleId, req.body);
 
-    return res.status(HttpCode.CREATED).json(updateArticle);
-  });
+      return res.status(HttpCode.CREATED).json(updateArticle);
+    },
+  );
 
-  router.delete('/:articleId', articleExists(service), (req, res) => {
+  router.delete(Url.articlesId, articleExists(service), (req, res) => {
     const { articleId } = req.params;
     const article = service.delete(articleId);
 
     return res.status(HttpCode.CREATED).json(article);
   });
 
-  router.get('/:articleId/comments', articleExists(service), (req, res) => {
+  router.get(Url.articleIdComments, articleExists(service), (req, res) => {
     const { articleId } = req.params;
     const comments = service.findAllComments(articleId);
 
     return res.status(HttpCode.OK).json(comments);
   });
 
-  router.delete('articles/:articleId/comments/:commentId', [articleExists(service), commentExists(service)], (req: Request, res: Response) => {
-    const { articleId, commentId } = req.params;
-    const comment = service.deleteComment(articleId, commentId);
+  router.delete(
+    Url.articleIdCommentId,
+    [articleExists(service), commentExists(service)],
+    (req: Request, res: Response) => {
+      const { articleId, commentId } = req.params;
+      const comment = service.deleteComment(articleId, commentId);
 
-    return res.status(HttpCode.CREATED).json(comment);
-  });
+      return res.status(HttpCode.CREATED).json(comment);
+    },
+  );
 
-  router.post('articles/:articleId/comments', [articleExists(service), commentValidator], (req: Request, res: Response) => {
-    const { articleId } = req.params;
-    const comment = service.createComment(articleId, req.body);
+  router.post(
+    Url.articleIdComments,
+    [articleExists(service), commentValidator],
+    (req: Request, res: Response) => {
+      const { articleId } = req.params;
+      const comment = service.createComment(articleId, req.body);
 
-    return res.status(HttpCode.CREATED).json(comment);
-  });
+      return res.status(HttpCode.CREATED).json(comment);
+    },
+  );
 };

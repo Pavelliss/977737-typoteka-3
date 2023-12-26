@@ -5,6 +5,7 @@ import { TArticle } from '../../types';
 import { HttpCode } from '../../constants';
 import supertest from 'supertest';
 import { describe, expect, test } from '@jest/globals';
+import { Url } from './constants';
 
 const EXISTS_TITLE = 'Куплю антиквариат.';
 const NO_EXISTS_TITLE = 'no exists title';
@@ -91,7 +92,7 @@ describe('API returns article based on search query', () => {
   let response: supertest.Response;
 
   beforeAll(async () => {
-    response = await supertest(app).get('/search').query({ query: EXISTS_TITLE });
+    response = await supertest(app).get(Url.search).query({ query: EXISTS_TITLE });
   });
 
   test('Status code 200', () => expect(response?.statusCode).toBe(HttpCode.OK));
@@ -101,7 +102,9 @@ describe('API returns article based on search query', () => {
 
 describe('API returns code error', () => {
   test('API returns code 404 if nothing is found', async () => {
-    const response: supertest.Response = await supertest(app).get('/search').query({ query: NO_EXISTS_TITLE });
+    const response: supertest.Response = await supertest(app)
+      .get('/search')
+      .query({ query: NO_EXISTS_TITLE });
     expect(response.statusCode).toBe(HttpCode.NOT_FOUND);
   });
 
