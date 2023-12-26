@@ -89,15 +89,15 @@ app.use(express.json());
 search(app, new Search(mocks));
 
 describe('API returns article based on search query', () => {
-  let response: supertest.Response;
+  let response: supertest.Response | null = null;
 
   beforeAll(async () => {
     response = await supertest(app).get(Url.search).query({ query: EXISTS_TITLE });
   });
 
   test('Status code 200', () => expect(response?.statusCode).toBe(HttpCode.OK));
-  test('1 article found', () => expect(response.body.length).toBe(1));
-  test('Article has correct id', () => expect(response.body[0].id).toBe('HL8m2C'));
+  test('1 article found', () => expect(response?.body.length).toBe(1));
+  test('Article has correct id', () => expect(response?.body[0].id).toBe('HL8m2C'));
 });
 
 describe('API returns code error', () => {

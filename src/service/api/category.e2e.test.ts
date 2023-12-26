@@ -43,14 +43,14 @@ app.use(express.json());
 category(app, new Category(mocks));
 
 describe('API returns category list', () => {
-  let response: supertest.Response;
+  let response: supertest.Response | null = null;
 
   beforeAll(async () => {
     response = await supertest(app).get(Url.category);
   });
 
-  test('Status code 200', () => expect(response.statusCode).toBe(HttpCode.OK));
-  test('return 4 category', () => expect(response.body.length).toBe(4));
+  test('Status code 200', () => expect(response?.statusCode).toBe(HttpCode.OK));
+  test('return 4 category', () => expect(response?.body.length).toBe(4));
   test('Categories names are: "Игры", "Животные", "Книги", "Разное"', () =>
-    expect(response.body).toEqual(mocks[0].categories));
+    expect(response?.body).toEqual(mocks[0].categories));
 });

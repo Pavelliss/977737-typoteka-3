@@ -6,11 +6,13 @@ import supertest from 'supertest';
 import { Url } from './constants';
 import { HttpCode } from '../../constants';
 
+const ARTICLE_ID = 'HL8m2C';
+const ARTICLE_TITLE = 'Куплю антиквариат.';
 const mocks: TArticle[] = [
   {
-    id: 'HL8m2C',
+    id: ARTICLE_ID,
     type: 'sale',
-    title: 'Куплю антиквариат.',
+    title: ARTICLE_TITLE,
     description:
       'Пользовались бережно и только по большим праздникам. Это настоящая находка для коллекционера! Кажется, что это хрупкая вещь. Если товар не понравится — верну всё до последней копейки. При покупке с меня бесплатная доставка в черте города.',
     sum: 91437,
@@ -59,5 +61,18 @@ describe('API returns a list of all articles', () => {
   test('Return list of 1 article', () =>
     expect(response?.body.length).toBe(mocks.length));
   test('The first article id is "HL8m2C', () =>
-    expect(response?.body[0].id).toBe('HL8m2C'));
+    expect(response?.body[0].id).toBe(ARTICLE_ID));
+});
+
+describe('API returns an article with given id', () => {
+  const app = createApi();
+  let response: supertest.Response | null = null;
+
+  beforeAll(async () => {
+    response = await supertest(app).get(`${Url.articles}/HL8m2C`);
+  });
+
+  test('Status code 200', () => expect(response?.statusCode).toBe(HttpCode.OK));
+  test('Article title is "Куплю антиквариат."', () =>
+    expect(response?.body.title).toBe(ARTICLE_TITLE));
 });
