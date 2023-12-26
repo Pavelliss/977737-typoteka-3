@@ -4,7 +4,7 @@ import { HttpCode } from '../../constants';
 const REQUIRE_FIELD = 'text';
 
 export default (req: Request, res: Response, next: NextFunction) => {
-  const newComment = req.params;
+  const newComment = req.body;
   const isKeyExists = Object.keys(newComment).includes(REQUIRE_FIELD);
 
   if (!isKeyExists) {

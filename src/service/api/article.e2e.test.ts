@@ -1,4 +1,4 @@
-import { TArticle } from '../../types';
+import { TArticle, TNewArticle } from '../../types';
 import express from 'express';
 import article from './article';
 import Article from '../data-service/article';
@@ -38,6 +38,14 @@ const mocks: TArticle[] = [
     ],
   },
 ];
+const newArticle: TNewArticle = {
+  type: 'offer',
+  title: 'Test title',
+  description: 'Test description',
+  sum: 100,
+  picture: 'test.img',
+  categories: ['Книги', 'Разное'],
+};
 
 const createApi = () => {
   const app = express();
@@ -75,4 +83,19 @@ describe('API returns an article with given id', () => {
   test('Status code 200', () => expect(response?.statusCode).toBe(HttpCode.OK));
   test('Article title is "Куплю антиквариат."', () =>
     expect(response?.body.title).toBe(ARTICLE_TITLE));
+});
+
+describe('API create article if data valid', () => {
+  const app = createApi();
+  let response: supertest.Response | null = null;
+
+  beforeAll(async () => {
+    response = await supertest(app).post(Url.articles).send(newArticle);
+  });
+
+  test('Status code 201', () => expect(response?.statusCode).toBe(HttpCode.CREATED));
+  test('Article count is changed', () =>
+    supertest(app)
+      .get(Url.articles)
+      .expect((res) => expect(res.body.length).toBe(2)));
 });
