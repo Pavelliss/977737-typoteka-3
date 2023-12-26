@@ -38,6 +38,7 @@ const mocks: TArticle[] = [
     ],
   },
 ];
+
 const newArticle: TNewArticle = {
   type: 'offer',
   title: 'Test title',
@@ -45,6 +46,14 @@ const newArticle: TNewArticle = {
   sum: 100,
   picture: 'test.img',
   categories: ['Книги', 'Разное'],
+};
+
+const invalidArticle: Omit<TNewArticle, 'category'> = {
+  type: 'offer',
+  title: 'Test title',
+  description: 'Test description',
+  sum: 100,
+  picture: 'test.img',
 };
 
 const createApi = () => {
@@ -65,7 +74,7 @@ describe('API returns a list of all articles', () => {
     response = await supertest(app).get(Url.articles);
   });
 
-  test('Status code 200', () => expect(response?.statusCode).toBe(HttpCode.OK));
+  test('Status code is 200', () => expect(response?.statusCode).toBe(HttpCode.OK));
   test('Return list of 1 article', () =>
     expect(response?.body.length).toBe(mocks.length));
   test('The first article id is "HL8m2C', () =>
@@ -80,7 +89,7 @@ describe('API returns an article with given id', () => {
     response = await supertest(app).get(`${Url.articles}/HL8m2C`);
   });
 
-  test('Status code 200', () => expect(response?.statusCode).toBe(HttpCode.OK));
+  test('Status code is 200', () => expect(response?.statusCode).toBe(HttpCode.OK));
   test('Article title is "Куплю антиквариат."', () =>
     expect(response?.body.title).toBe(ARTICLE_TITLE));
 });
@@ -93,9 +102,21 @@ describe('API create article if data valid', () => {
     response = await supertest(app).post(Url.articles).send(newArticle);
   });
 
-  test('Status code 201', () => expect(response?.statusCode).toBe(HttpCode.CREATED));
+  test('Status code is 201', () => expect(response?.statusCode).toBe(HttpCode.CREATED));
   test('Article count is changed', () =>
     supertest(app)
       .get(Url.articles)
       .expect((res) => expect(res.body.length).toBe(2)));
+});
+
+describe('API refuses to create an article if data is invalid', () => {
+  const app = createApi();
+  let response: supertest.Response | null = null;
+
+  beforeAll(async () => {
+    response = await supertest(app).post(Url.articles).send(invalidArticle);
+  });
+
+  test('Status code is 400', () =>
+    expect(response?.statusCode).toBe(HttpCode.BAD_REQUEST));
 });
