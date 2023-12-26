@@ -48,7 +48,7 @@ const newArticle: TNewArticle = {
   categories: ['Книги', 'Разное'],
 };
 
-const invalidArticle: Omit<TNewArticle, 'category'> = {
+const invalidArticle: Omit<TNewArticle, 'categories'> = {
   type: 'offer',
   title: 'Test title',
   description: 'Test description',
