@@ -13,7 +13,7 @@ export const MAX_ID_LENGTH = 6;
 
 export const HttpCode = {
   OK: 200,
-  CREATED: 201,
+  SUCCESS: 201,
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,

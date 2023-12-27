@@ -28,7 +28,7 @@ export default (app: Router, service: Article) => {
   router.post('/', articleValidator, (req, res) => {
     const newArticle = service.create(req.body);
 
-    return res.status(HttpCode.CREATED).json(newArticle);
+    return res.status(HttpCode.SUCCESS).json(newArticle);
   });
 
   router.put(
@@ -38,7 +38,7 @@ export default (app: Router, service: Article) => {
       const { articleId } = req.params;
       const updateArticle = service.edit(articleId, req.body);
 
-      return res.status(HttpCode.CREATED).json(updateArticle);
+      return res.status(HttpCode.SUCCESS).json(updateArticle);
     },
   );
 
@@ -46,7 +46,7 @@ export default (app: Router, service: Article) => {
     const { articleId } = req.params;
     const article = service.delete(articleId);
 
-    return res.status(HttpCode.CREATED).json(article);
+    return res.status(HttpCode.SUCCESS).json(article);
   });
 
   router.get(Url.articleIdComments, articleExists(service), (req, res) => {
@@ -63,7 +63,7 @@ export default (app: Router, service: Article) => {
       const { articleId, commentId } = req.params;
       const comment = service.deleteComment(articleId, commentId);
 
-      return res.status(HttpCode.CREATED).json(comment);
+      return res.status(HttpCode.SUCCESS).json(comment);
     },
   );
 
@@ -74,7 +74,7 @@ export default (app: Router, service: Article) => {
       const { articleId } = req.params;
       const comment = service.createComment(articleId, req.body);
 
-      return res.status(HttpCode.CREATED).json(comment);
+      return res.status(HttpCode.SUCCESS).json(comment);
     },
   );
 };

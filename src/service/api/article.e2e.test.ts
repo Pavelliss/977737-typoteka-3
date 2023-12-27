@@ -8,6 +8,7 @@ import { HttpCode } from '../../constants';
 
 const ARTICLE_ID = 'HL8m2C';
 const ARTICLE_TITLE = 'Куплю антиквариат.';
+const FAKE_ID = 'fakeId';
 const mocks: TArticle[] = [
   {
     id: ARTICLE_ID,
@@ -102,7 +103,7 @@ describe('API create article if data valid', () => {
     response = await supertest(app).post(Url.articles).send(newArticle);
   });
 
-  test('Status code is 201', () => expect(response?.statusCode).toBe(HttpCode.CREATED));
+  test('Status code is 201', () => expect(response?.statusCode).toBe(HttpCode.SUCCESS));
   test('Article count is changed', () =>
     supertest(app)
       .get(Url.articles)
@@ -119,4 +120,86 @@ describe('API refuses to create an article if data is invalid', () => {
 
   test('Status code is 400', () =>
     expect(response?.statusCode).toBe(HttpCode.BAD_REQUEST));
+});
+
+describe('API change existent article', () => {
+  const changedArticle = Object.assign(newArticle, { type: 'sale' });
+  const app = createApi();
+  let response: supertest.Response | null = null;
+
+  beforeAll(async () => {
+    response = await supertest(app)
+      .put(`${Url.articles}/${ARTICLE_ID}`)
+      .send(changedArticle);
+  });
+
+  test('Status code is 200', () => expect(response?.statusCode).toBe(HttpCode.SUCCESS));
+  test('Return the changed article', () =>
+    expect(response?.body).toEqual(expect.objectContaining(changedArticle)));
+});
+
+test('API returns status code 404 when trying to change non-existent article', () => {
+  const changedArticle = Object.assign(newArticle, {});
+  const app = createApi();
+
+  return supertest(app)
+    .put(`${Url.articles}/${FAKE_ID}`)
+    .send(changedArticle)
+    .expect(HttpCode.NOT_FOUND);
+});
+
+test('API returns status code 400 when trying to change an article with invalid data', () => {
+  const app = createApi();
+
+  return supertest(app)
+    .put(`${Url.articles}/${ARTICLE_ID}`)
+    .send(invalidArticle)
+    .expect(HttpCode.BAD_REQUEST);
+});
+
+describe('API delete an article', () => {
+  const app = createApi();
+  let response: supertest.Response | null = null;
+
+  beforeAll(async () => {
+    response = await supertest(app).delete(`${Url.articles}/${ARTICLE_ID}`);
+  });
+
+  test('Status code is 201', () => expect(response?.statusCode).toBe(HttpCode.SUCCESS));
+  test('Return delete article', () => expect(response?.body.id).toBe(ARTICLE_ID));
+});
+
+test('API refuses to delete non-existent article', () => {
+  const app = createApi();
+
+  return supertest(app).delete(`${Url.articles}/${FAKE_ID}`).expect(HttpCode.NOT_FOUND);
+});
+
+describe('API create a new comment', () => {
+  const app = createApi();
+  let response: supertest.Response | null = null;
+  const text = 'new comment';
+
+  beforeAll(async () => {
+    response = await supertest(app)
+      .post(`${Url.articles}/${ARTICLE_ID}/comments`)
+      .send({ text });
+  });
+
+  test('Status code is 201', () => expect(response?.statusCode).toBe(HttpCode.SUCCESS));
+  test('New comment is created', () => expect(response?.body.text).toEqual(text));
+});
+
+test('API refuses to create a comment to non-existent article', () => {
+  const app = createApi();
+  return supertest(app)
+    .post(`${Url.articles}/${FAKE_ID}/comments`)
+    .expect(HttpCode.NOT_FOUND);
+});
+
+test('API refuses to delete non-existent comment', () => {
+  const app = createApi();
+  return supertest(app)
+    .delete(`${Url.articles}/${ARTICLE_ID}/comments/${FAKE_ID}`)
+    .expect(HttpCode.NOT_FOUND);
 });
