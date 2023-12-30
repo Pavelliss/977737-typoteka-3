@@ -2,3 +2,4 @@ dist
 .eslintrc.js
 .prettierrc.js
 babel.config.js
+**/express/public/**/*.js
