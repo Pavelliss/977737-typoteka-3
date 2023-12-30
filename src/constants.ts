@@ -11,6 +11,8 @@ export const API_PREFIX = '/api';
 
 export const MAX_ID_LENGTH = 6;
 
+export const DEFAULT_PORT = 3000;
+
 export const HttpCode = {
   OK: 200,
   SUCCESS: 201,
