@@ -1,9 +1,7 @@
-import { API_PREFIX, HttpCode } from '../../constants';
+import { API_PREFIX, DEFAULT_PORT, HttpCode } from '../../constants';
 import express, { NextFunction, Request, Response } from 'express';
 import router from '../api';
 import { getLogger } from '../lib/logger';
-
-const DEFAULT_PORT = 3000;
 
 const app = express();
 const logger = getLogger({ name: 'api' });
