@@ -1,35 +1,28 @@
-import { customConsole } from '../../utils';
-import * as fs from 'fs';
-import { HttpCode } from '../../constants';
-import express from 'express';
-
-type TMock = {
-  type: string;
-  title: string;
-  description: string;
-  sum: number;
-  picture: string;
-  category: string[];
-};
-
-const DEFAULT_PORT = 3000;
-const FILE_NAME = `mocks.json`;
+import { API_PREFIX, DEFAULT_PORT, HttpCode } from '../../constants';
+import express, { NextFunction, Request, Response } from 'express';
+import router from '../api';
+import { getLogger } from '../lib/logger';
 
 const app = express();
+const logger = getLogger({ name: 'api' });
 
+app.use(API_PREFIX, router);
 app.use(express.json());
-
-app.get('/posts', async (_, res) => {
-  try {
-    const fileContent = await fs.promises.readFile(FILE_NAME);
-    const mock: TMock[] = JSON.parse(`${fileContent}`);
-    res.send(mock);
-  } catch {
-    res.send([]);
-  }
+app.use((req, res) => {
+  res.status(HttpCode.NOT_FOUND).send(`Not found`);
+  logger.error(`Route not found: ${req.url}`);
 });
-
-app.use((_, res) => res.status(HttpCode.NOT_FOUND).send(`Not found`));
+// eslint-disable-next-line no-unused-vars
+app.use((err: Error, _req: Request, _res: Response, _next: NextFunction) => {
+  logger.error(`An error occurred on processing request: ${err.message}`);
+});
+app.use((req, res, next) => {
+  logger.debug(`Request on route ${req.url}`);
+  res.on(`finish`, () => {
+    logger.info(`Response status code ${res.statusCode}`);
+  });
+  next();
+});
 
 const server = {
   name: '--server',
@@ -38,10 +31,10 @@ const server = {
 
     const port = Number.parseInt(customPort, 10) || DEFAULT_PORT;
     app.listen(port, () => {
-      customConsole.success(`Ожидаю соединений на ${port}`);
+      logger.info(`Ожидаю соединений на ${port}`);
     });
     app.on('error', (err) => {
-      customConsole.error(`Ошибка при создании сервера: ${err}`);
+      logger.error(`Ошибка при создании сервера: ${err}`);
     });
   },
 };
